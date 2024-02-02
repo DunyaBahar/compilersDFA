@@ -7,6 +7,7 @@ using namespace std;
 using std::make_pair;
 #include <utility>  // pair is in here
 #include <vector>  // arr of undefined length
+#include <iostream>
 
 void StateMachine::reset() {
     // called to reset the state machine to its initial state.
@@ -196,9 +197,25 @@ TokenType StateMachine::next(StringStack &stack, std::string &lexeme) {
         if ((thisInt == -1) && (eof == false)) {
             eof = true;
             stack.unget();
-            return token;
+            if (currentState == 2) {
+                currentState = 0;
+                std::cout << lexeme << std::endl;
+                return TokWhitespace;
+            }
+            if (currentState == 3) {
+                currentState = 0;
+                std::cout << "****************" << std::endl;
+                std::cout << lexeme << std::endl;
+                return TokIdentifier;
+            }
+            if (currentState == 4 || currentState == 5) {
+                currentState = 0;                
+                std::cout << lexeme << std::endl;
+                return TokInteger;
+            }
         }
         else if ((thisInt == -1) && (eof == true))
+            lexeme = "";
             return TokEOF;
             // return TokenType::TokEOF;  ungetting and returning token instead...
         
@@ -251,6 +268,3 @@ TokenType StateMachine::next(StringStack &stack, std::string &lexeme) {
     }
 
 }
-
-
-
